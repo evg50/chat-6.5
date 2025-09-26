@@ -11,6 +11,8 @@ const app = () => {
   const usernameInput = document.querySelector('.username-input');
   const messages = [];
   let username = '';
+  const usersList = document.querySelector('.users-list');
+
 
   const handleSendMessage = (text) => {
     if (!text.trim()) {
