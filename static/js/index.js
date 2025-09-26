@@ -1,8 +1,9 @@
-// const { applyMixins } = require("rxjs/internal/util/applyMixins");
-// import { applyMixins } from 'rxjs/internal/util/applyMixins'
+
 
 const app = () => {
+
   const socket = io('https://chat-6-5-1.onrender.com');
+
   const msgInput = document.querySelector('.message-input');
   console.log(msgInput); // should not be null
   const msgList = document.querySelector('.messages-list');
@@ -10,19 +11,22 @@ const app = () => {
   const usernameInput = document.querySelector('.username-input');
   const messages = [];
 
-  const getMessages = async () => {
-    try {
-      const { data } = await axios.get('https://chat-6-5-1.onrender.com/api/chat');
-      renderMessages(data);
-      data.forEach((item) => {
-        messages.push(item);
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
-  getMessages();
+
+  // const getMessages = async () => {
+  //   try {
+  //     const { data } = await axios.get('https://chat-6-5-1.onrender.com/chat');
+  //     renderMessages(data);
+  //     data.forEach((item) => {
+  //       messages.push(item);
+  //     });
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
+
+
+  // getMessages();
 
   const handleSendMessage = (text) => {
     if (!text.trim()) {
