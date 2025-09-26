@@ -10,28 +10,18 @@ const app = () => {
   const sendBtn = document.querySelector('.send-btn');
   const usernameInput = document.querySelector('.username-input');
   const messages = [];
-
-
-
-  // const getMessages = async () => {
-  //   try {
-  //     const { data } = await axios.get('https://chat-6-5-1.onrender.com/chat');
-  //     renderMessages(data);
-  //     data.forEach((item) => {
-  //       messages.push(item);
-  //     });
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
-
-
-  // getMessages();
+  let username = '';
 
   const handleSendMessage = (text) => {
     if (!text.trim()) {
       return;
     }
+
+    if (!username) {
+      username = usernameInput.value.trim() || 'Anonymous';
+      socket.emit('join', username);
+    }
+
     sendMessage({
       username: usernameInput.value || 'Anonymous',
       text,
@@ -77,5 +67,17 @@ const app = () => {
     messages.push(message);
     renderMessages(messages);
   });
+
+   socket.on('systemMessage', (msg) => {
+    const li = document.createElement('li');
+    li.textContent = msg;
+    li.classList.add('text-muted');
+    msgList.appendChild(li);
+  });
+
+  socket.on('usersList', (users) => {
+    usersList.innerHTML = users.map((u) => `<li>${u}</li>`).join('');
+  });
+
 };
 app();
