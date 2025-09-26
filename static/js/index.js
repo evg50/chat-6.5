@@ -37,45 +37,44 @@ const app = () => {
 
   const renderMessages = (data) => {
     let messages = '';
-    data.forEach(
-      (message) =>
-        (messages += `
-        <li class="bg-dark p-2 rounded mb-2 d-flex justify-content-between message">
-            <div class="mr-2">
-                <span class="text-info">${message.username}</span>
-                <p class="text-light">${message.text}</p>
-            </div>
-            <span class="text-muted text-right date">
-                ${new Date(message.createdAt).toLocaleString('ru', {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                })}
-            </span>
-            <p class="text-light">${message.text}</p>
-<button class="btn btn-sm btn-warning edit-btn" data-id="${message.id}">✏️</button>
-<button class="btn btn-sm btn-danger delete-btn" data-id="${message.id}">🗑️</button>
+    data.forEach((message) => {
+      messages += `
+      <li class="bg-dark p-2 rounded mb-2 d-flex justify-content-between message">
+        <div class="mr-2">
+          <span class="text-info">${message.username}</span>
+          <p class="text-light">${message.text}</p>
+        </div>
+        <span class="text-muted text-right date">
+          ${new Date(message.createdAt).toLocaleString('ru', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          })}
+        </span>
+        <button class="btn btn-sm btn-warning edit-btn" data-id="${message.id}">✏️</button>
+        <button class="btn btn-sm btn-danger delete-btn" data-id="${message.id}">🗑️</button>
+      </li>`;
+    });
 
-        </li>`),
-    );
     msgList.innerHTML = messages;
-  };
-  msgList.querySelectorAll('.edit-btn').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.id;
-      const newText = prompt('Введите новый текст');
-      if (newText) socket.emit('editMessage', { id, text: newText });
-    }),
-  );
 
-  msgList.querySelectorAll('.delete-btn').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.id;
-      socket.emit('deleteMessage', id);
-    }),
-  );
+    msgList.querySelectorAll('.edit-btn').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id, 10);
+        const newText = prompt('Введите новый текст');
+        if (newText) socket.emit('editMessage', { id, text: newText });
+      }),
+    );
+
+    msgList.querySelectorAll('.delete-btn').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.id, 10);
+        socket.emit('deleteMessage', id);
+      }),
+    );
+  };
 
   const sendMessage = (message) => socket.emit('sendMessage', message);
 
