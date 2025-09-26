@@ -58,4 +58,22 @@ export class AppGateway
       this.server.emit('usersList', Object.values(this.users));
     }
   }
+@SubscribeMessage('editMessage')
+async handleEditMessage(
+  @MessageBody() payload: { id: number; text: string },
+  @ConnectedSocket() client: Socket,
+): Promise<void> {
+  const updated = await this.appService.updateMessage(payload.id, payload.text);
+  this.server.emit('messageEdited', updated);
+}
+
+@SubscribeMessage('deleteMessage')
+async handleDeleteMessage(
+  @MessageBody() id: number,
+  @ConnectedSocket() client: Socket,
+): Promise<void> {
+  await this.appService.deleteMessage(id);
+  this.server.emit('messageDeleted', id);
+}
+
 }

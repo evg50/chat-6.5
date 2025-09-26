@@ -14,4 +14,17 @@ export class AppService {
   async getMessages(): Promise<Chat[]>{
     return await this.prisma.chat.findMany();
   }
+
+  async updateMessage(id: number, text: string) {
+  return this.prisma.chat.update({
+    where: { id },
+    data: { text },
+  });
+}
+
+async deleteMessage(id: number) {
+  return this.prisma.chat.delete({
+    where: { id },
+  });
+}
 }

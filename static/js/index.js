@@ -1,7 +1,4 @@
-
-
 const app = () => {
-
   const socket = io('https://chat-6-5-1.onrender.com');
 
   const msgInput = document.querySelector('.message-input');
@@ -12,7 +9,6 @@ const app = () => {
   const messages = [];
   let username = '';
   const usersList = document.querySelector('.users-list');
-
 
   const handleSendMessage = (text) => {
     if (!text.trim()) {
@@ -58,10 +54,28 @@ const app = () => {
                   minute: 'numeric',
                 })}
             </span>
+            <p class="text-light">${message.text}</p>
+<button class="btn btn-sm btn-warning edit-btn" data-id="${message.id}">✏️</button>
+<button class="btn btn-sm btn-danger delete-btn" data-id="${message.id}">🗑️</button>
+
         </li>`),
     );
     msgList.innerHTML = messages;
   };
+  msgList.querySelectorAll('.edit-btn').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const newText = prompt('Введите новый текст');
+      if (newText) socket.emit('editMessage', { id, text: newText });
+    }),
+  );
+
+  msgList.querySelectorAll('.delete-btn').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      socket.emit('deleteMessage', id);
+    }),
+  );
 
   const sendMessage = (message) => socket.emit('sendMessage', message);
 
@@ -70,7 +84,7 @@ const app = () => {
     renderMessages(messages);
   });
 
-   socket.on('systemMessage', (msg) => {
+  socket.on('systemMessage', (msg) => {
     const li = document.createElement('li');
     li.textContent = msg;
     li.classList.add('text-muted');
@@ -81,5 +95,21 @@ const app = () => {
     usersList.innerHTML = users.map((u) => `<li>${u}</li>`).join('');
   });
 
+  socket.on('messageEdited', (updated) => {
+    const index = messages.findIndex((m) => m.id === updated.id);
+    if (index !== -1) {
+      messages[index].text = updated.text;
+      renderMessages(messages);
+    }
+  });
+
+  socket.on('messageDeleted', (id) => {
+    const index = messages.findIndex((m) => m.id === id);
+    if (index !== -1) {
+      messages.splice(index, 1);
+      renderMessages(messages);
+    }
+  });
 };
+
 app();
