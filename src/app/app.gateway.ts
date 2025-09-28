@@ -26,8 +26,8 @@ export class AppGateway
     client: Socket,
     payload: Prisma.ChatCreateInput,
   ): Promise<void> {
-    await this.appService.createMessage(payload);
-    this.server.emit('recMessage', payload);
+    const saved = await this.appService.createMessage(payload); // ✅ сохраняем
+  this.server.emit('recMessage', saved); // ✅ отправляем с id
   }
 
   @SubscribeMessage('join')
