@@ -36,7 +36,7 @@ export class AppGateway
   ) {
     this.users[client.id] = username;
 
-    this.server.emit('systemMessage', `${username} подключился`);
+    this.server.emit('systemMessage', `${username} connected`);
 
     this.server.emit('usersList', Object.values(this.users));
   }
@@ -53,7 +53,7 @@ export class AppGateway
     if (username) {
       delete this.users[client.id];
 
-      this.server.emit('systemMessage', `${username} отключился`);
+      this.server.emit('systemMessage', `${username} disconected`);
       this.server.emit('usersList', Object.values(this.users));
     }
   }
