@@ -22,12 +22,13 @@ export class AppGateway
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('sendMessage')
-  async handleSendMessage(
-    client: Socket,
-    payload: Prisma.ChatCreateInput,
-  ): Promise<void> {
-    const saved = await this.appService.createMessage(payload); 
-  }
+async handleSendMessage(
+  client: Socket,
+  payload: Prisma.ChatCreateInput,
+): Promise<void> {
+  const saved = await this.appService.createMessage(payload);
+  this.server.emit('recMessage', saved); 
+}
 
   @SubscribeMessage('join')
   handleJoin(
