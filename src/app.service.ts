@@ -27,4 +27,9 @@ async deleteMessage(id: number) {
     where: { id },
   });
 }
+async getMessageById(id: number) {
+  return this.prisma.chat.findUnique({
+    where: { id },
+  });
+}
 }

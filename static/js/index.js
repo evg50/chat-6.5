@@ -53,8 +53,14 @@ const app = () => {
             minute: 'numeric',
           })}
         </span>
-        <button class="btn btn-sm btn-warning edit-btn" data-id="${message.id}">✏️</button>
-        <button class="btn btn-sm btn-danger delete-btn" data-id="${message.id}">🗑️</button>
+        ${
+          message.username === username
+            ? `
+              <button class="btn btn-sm btn-warning edit-btn" data-id="${message.id}">✏️</button>
+              <button class="btn btn-sm btn-danger delete-btn" data-id="${message.id}">🗑️</button>
+            `
+            : ''
+        }
       </li>`;
     });
 

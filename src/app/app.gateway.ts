@@ -57,11 +57,26 @@ export class AppGateway
       this.server.emit('usersList', Object.values(this.users));
     }
   }
+
+
 @SubscribeMessage('editMessage')
 async handleEditMessage(
   @MessageBody() payload: { id: number; text: string },
   @ConnectedSocket() client: Socket,
 ): Promise<void> {
+  const message = await this.appService.getMessageById(payload.id);
+
+  const currentUsername = this.users[client.id];
+
+   if (!message) {
+    client.emit('error', 'message not found');
+    return;
+  }
+  if (message.username !== currentUsername) {
+    client.emit('error', 'You can not edit message');
+    return;
+  }
+
   const updated = await this.appService.updateMessage(payload.id, payload.text);
   this.server.emit('messageEdited', updated);
 }
@@ -71,6 +86,17 @@ async handleDeleteMessage(
   @MessageBody() id: number,
   @ConnectedSocket() client: Socket,
 ): Promise<void> {
+  const message = await this.appService.getMessageById(id);
+ if (!message) {
+    client.emit('error', 'message not found');
+    return;
+  }
+  const currentUsername = this.users[client.id];
+  if (message.username !== currentUsername) {
+    client.emit('error', 'You can not delete message');
+    return;
+  }
+
   await this.appService.deleteMessage(id);
   this.server.emit('messageDeleted', id);
 }
